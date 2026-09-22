@@ -1,0 +1,54 @@
+# Fonte de verdade única da VPN IPSec. Os dois lados são gerados daqui.
+# A PSK NÃO fica neste arquivo: é lida de $VPN_PSK ou de um cofre.
+
+tunel:
+  nome: VPN_SITE_A_SITE_B
+  rede_tunel: 169.255.1.0/30
+
+phase1:
+  ike_version: 2
+  criptografia: aes256
+  hash: sha256
+  dh_group: 14
+  lifetime_segundos: 28800
+  autenticacao: psk
+  local_id_tipo: ip
+  dpd: on-idle
+  dpd_intervalo: 10
+  nat_traversal: true
+
+phase2:
+  protocolo: esp
+  criptografia: aes256
+  hash: sha256
+  pfs: true
+  dh_group: 14
+  lifetime_segundos: 3600
+  proxy_id_local: 0.0.0.0/0
+  proxy_id_remoto: 0.0.0.0/0
+  replay_protection: true
+
+sites:
+  - nome: Site A
+    fabricante: fortinet
+    modelo: FortiGate 60F
+    ip_gerencia: 10.10.0.1
+    vdom: root
+    wan_interface: port1
+    wan_ip: 203.0.113.10
+    lan: 10.10.0.0/24
+    interface_tunel: VPN_TO_PALO
+    ip_tunel: 169.255.1.1
+    zona: vpn_zone
+
+  - nome: Site B
+    fabricante: paloalto
+    modelo: PA-440
+    ip_gerencia: 10.20.0.1
+    virtual_router: default
+    wan_interface: ethernet1/1
+    wan_ip: 198.51.100.20
+    lan: 10.20.0.0/24
+    interface_tunel: tunnel.10
+    ip_tunel: 169.255.1.2
+    zona: ZONA-VPN

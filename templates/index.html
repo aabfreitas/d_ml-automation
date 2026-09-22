@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuração de VLANs — Switch Cisco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-inner">
+    <h1>Configuração de rede</h1>
+    <p>Aplica VLANs/subinterfaces e hostname em switch ou roteador Cisco, grava na NVRAM e confere o resultado.</p>
+  </div>
+</header>
+
+<main>
+  <!-- coluna esquerda: entrada -->
+  <div>
+    <section class="painel">
+      <h2>Dispositivo</h2>
+      <div class="painel-corpo">
+        <label for="tipoDispositivo">Tipo de dispositivo</label>
+        <select id="tipoDispositivo" style="width:100%;padding:8px 10px;font-size:14px;border:1px solid var(--linha);border-radius:4px;margin-bottom:14px">
+          <option value="switch">Switch (VLANs)</option>
+          <option value="router">Roteador (subinterfaces 802.1Q)</option>
+        </select>
+
+        <div class="grade">
+          <div>
+            <label for="host">Endereço IP</label>
+            <input type="text" id="host" value="{{ padroes.host }}" placeholder="192.168.10.2">
+          </div>
+          <div>
+            <label for="port">Porta SSH</label>
+            <input type="number" id="port" value="{{ padroes.port }}" min="1" max="65535">
+          </div>
+        </div>
+        <div class="grade-3">
+          <div>
+            <label for="username">Usuário</label>
+            <input type="text" id="username" value="{{ padroes.username }}" autocomplete="username">
+          </div>
+          <div>
+            <label for="password">Senha</label>
+            <input type="password" id="password" autocomplete="current-password">
+          </div>
+          <div>
+            <label for="secret">Senha de enable</label>
+            <input type="password" id="secret" placeholder="opcional">
+          </div>
+        </div>
+        <label class="interruptor">
+          <input type="checkbox" id="simulate" {% if padroes.simulate %}checked{% endif %}>
+          <span>Usar dispositivo simulado
+            <small>Executa o fluxo inteiro em memória, sem abrir conexão de rede.</small>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ===== formulário do SWITCH ===== -->
+    <section class="painel" id="painelSwitch">
+      <h2>Configuração desejada — VLANs</h2>
+      <div class="painel-corpo">
+        <div style="margin-bottom:16px">
+          <label for="hostname">Hostname do switch</label>
+          <input type="text" id="hostname" value="{{ padroes.hostname }}">
+        </div>
+
+        <label>VLANs</label>
+        <div class="vlan-lista" id="vlanLista"></div>
+        <div style="margin-top:10px">
+          <button type="button" class="discreto" id="btnAddVlan">Adicionar VLAN</button>
+          <button type="button" class="discreto" id="btnRestaurar">Restaurar padrão</button>
+        </div>
+
+        <div class="acoes">
+          <button type="button" class="primario" id="btnAplicar">Aplicar no switch</button>
+          <button type="button" id="btnValidar">Só validar</button>
+          <button type="button" id="btnPrevia">Ver comandos</button>
+        </div>
+
+        <div class="acoes" style="margin-top:12px">
+          <label class="interruptor"><input type="checkbox" id="fazerBackup" checked><span>Fazer backup antes</span></label>
+          <label class="interruptor"><input type="checkbox" id="salvarNvram" checked><span>Gravar na NVRAM</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== formulário do ROTEADOR ===== -->
+    <section class="painel" id="painelRouter" style="display:none">
+      <h2>Configuração desejada — Subinterfaces</h2>
+      <div class="painel-corpo">
+        <div class="grade">
+          <div>
+            <label for="hostnameRouter">Hostname do roteador</label>
+            <input type="text" id="hostnameRouter" value="{{ padroes_roteador.hostname }}">
+          </div>
+          <div>
+            <label for="interfaceFisica">Interface física (trunk)</label>
+            <input type="text" id="interfaceFisica" value="{{ padroes_roteador.interface_fisica }}">
+          </div>
+        </div>
+
+        <label>Subinterfaces (uma por VLAN)</label>
+        <div class="vlan-lista" id="subLista"></div>
+        <div style="margin-top:10px">
+          <button type="button" class="discreto" id="btnAddSub">Adicionar subinterface</button>
+          <button type="button" class="discreto" id="btnRestaurarSub">Restaurar padrão</button>
+        </div>
+
+        <div class="acoes">
+          <button type="button" class="primario" id="btnAplicarRouter">Aplicar no roteador</button>
+          <button type="button" id="btnValidarRouter">Só validar</button>
+          <button type="button" id="btnPreviaRouter">Ver comandos</button>
+        </div>
+
+        <div class="acoes" style="margin-top:12px">
+          <label class="interruptor"><input type="checkbox" id="fazerBackupRouter" checked><span>Fazer backup antes</span></label>
+          <label class="interruptor"><input type="checkbox" id="salvarNvramRouter" checked><span>Gravar na NVRAM</span></label>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- coluna direita: resultado -->
+  <div>
+    <section class="painel">
+      <h2>Execução</h2>
+      <div class="painel-corpo" id="paineisEtapas">
+        <p class="vazio">Nenhuma execução ainda. Confira os dados e escolha uma ação.</p>
+      </div>
+    </section>
+
+    <section class="painel">
+      <h2>Validação <span id="seloValidacao"></span></h2>
+      <div class="painel-corpo" id="paineisAlertas">
+        <p class="vazio">A comparação entre o switch e o padrão aparece aqui depois de aplicar ou validar.</p>
+      </div>
+    </section>
+
+    <section class="painel">
+      <h2>Saída do switch</h2>
+      <div class="painel-corpo">
+        <pre class="console" id="saidaConsole">Aguardando execução.</pre>
+      </div>
+    </section>
+
+    <section class="painel">
+      <h2>Backups</h2>
+      <div class="painel-corpo">
+        <ul class="lista-backups" id="listaBackups"></ul>
+        <p class="vazio" id="semBackups">Nenhum backup gerado até agora.</p>
+      </div>
+    </section>
+
+    <section class="painel">
+      <h2>Logs de execução</h2>
+      <div class="painel-corpo">
+        <div class="tabela-logs" id="tabelaLogs"></div>
+        <p class="vazio" id="semLogs">Nenhuma execução registrada ainda.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const VLANS_PADRAO = {{ vlans_padrao | tojson }};
+const SUBINTERFACES_PADRAO = {{ subinterfaces_padrao | tojson }};
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

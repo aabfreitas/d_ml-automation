@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<!--
+  Site B - Palo Alto PA-440
+  Configuração de referência: VPN IPSec route-based para FortiGate (Site A)
+
+  Envio via API XML:
+    curl -k -X POST 'https://198.51.100.20/api/' \
+      --data-urlencode 'type=config' \
+      --data-urlencode 'action=set' \
+      --data-urlencode "xpath=/config/devices/entry[@name='localhost.localdomain']/network" \
+      --data-urlencode "element=$(cat trecho.xml)" \
+      --data-urlencode "key=$PAN_API_KEY"
+
+  Depois do último 'set', é obrigatório:
+    curl -k -X POST 'https://198.51.100.20/api/?type=commit&cmd=<commit></commit>&key=...'
+  e acompanhar o job até 'FIN'. Sem o commit, nada disso vale.
+-->
+<network>
+  <!-- Perfis de criptografia: precisam ser idênticos aos do FortiGate -->
+  <ike>
+    <crypto-profiles>
+      <ike-crypto-profiles>
+        <entry name="IKE-FORTIGATE">
+          <encryption><member>aes-256-cbc</member></encryption>
+          <hash><member>sha256</member></hash>
+          <dh-group><member>group14</member></dh-group>
+          <lifetime><seconds>28800</seconds></lifetime>
+        </entry>
+      </ike-crypto-profiles>
+
+      <ipsec-crypto-profiles>
+        <entry name="IPSEC-FORTIGATE">
+          <esp>
+            <encryption><member>aes-256-cbc</member></encryption>
+            <authentication><member>sha256</member></authentication>
+          </esp>
+          <dh-group>group14</dh-group>
+          <lifetime><seconds>3600</seconds></lifetime>
+        </entry>
+      </ipsec-crypto-profiles>
+    </crypto-profiles>
+
+    <!-- IKE Gateway = "Phase 1" no vocabulário Fortinet -->
+    <gateway>
+      <entry name="GW-SITE-A-FORTIGATE">
+        <authentication>
+          <pre-shared-key><key>$VPN_PSK</key></pre-shared-key>
+        </authentication>
+        <protocol>
+          <ikev2>
+            <ike-crypto-profile>IKE-FORTIGATE</ike-crypto-profile>
+            <dpd>
+              <enable>yes</enable>
+              <interval>10</interval>
+            </dpd>
+          </ikev2>
+          <version>ikev2</version>
+        </protocol>
+        <local-address>
+          <interface>ethernet1/1</interface>
+          <ip>198.51.100.20/24</ip>
+        </local-address>
+        <protocol-common>
+          <nat-traversal><enable>yes</enable></nat-traversal>
+          <fragmentation><enable>no</enable></fragmentation>
+        </protocol-common>
+        <peer-address><ip>203.0.113.10</ip></peer-address>
+        <local-id><type>ipaddr</type><id>198.51.100.20</id></local-id>
+        <peer-id><type>ipaddr</type><id>203.0.113.10</id></peer-id>
+      </entry>
+    </gateway>
+  </ike>
+
+  <!-- Interface de túnel -->
+  <interface>
+    <tunnel>
+      <units>
+        <entry name="tunnel.10">
+          <ip><entry name="169.255.1.2/30"/></ip>
+          <interface-management-profile>PING-ONLY</interface-management-profile>
+          <comment>Tunel IPSec para o Site A (FortiGate)</comment>
+        </entry>
+      </units>
+    </tunnel>
+  </interface>
+
+  <!-- IPSec Tunnel = "Phase 2" -->
+  <tunnel>
+    <ipsec>
+      <entry name="TUNEL-SITE-A">
+        <auto-key>
+          <ike-gateway>
+            <entry name="GW-SITE-A-FORTIGATE"/>
+          </ike-gateway>
+          <ipsec-crypto-profile>IPSEC-FORTIGATE</ipsec-crypto-profile>
+          <proxy-id>
+            <entry name="PROXY-ANY">
+              <local>0.0.0.0/0</local>
+              <remote>0.0.0.0/0</remote>
+              <protocol><any/></protocol>
+            </entry>
+          </proxy-id>
+        </auto-key>
+        <tunnel-interface>tunnel.10</tunnel-interface>
+        <anti-replay>yes</anti-replay>
+        <tunnel-monitor>
+          <enable>yes</enable>
+          <destination-ip>169.255.1.1</destination-ip>
+        </tunnel-monitor>
+      </entry>
+    </ipsec>
+  </tunnel>
+
+  <!-- Roteamento: a interface de túnel precisa estar no virtual router -->
+  <virtual-router>
+    <entry name="default">
+      <interface>
+        <member>ethernet1/1</member>
+        <member>ethernet1/2</member>
+        <member>tunnel.10</member>
+      </interface>
+      <routing-table>
+        <ip>
+          <static-route>
+            <entry name="ROTA-LAN-SITE-A">
+              <destination>10.10.0.0/24</destination>
+              <interface>tunnel.10</interface>
+              <nexthop><ip-address>169.255.1.1</ip-address></nexthop>
+              <metric>10</metric>
+            </entry>
+          </static-route>
+        </ip>
+      </routing-table>
+    </entry>
+  </virtual-router>
+</network>
+
+<!--
+  Zona de segurança e regras (xpath /config/devices/.../vsys/entry[@name='vsys1'])
+
+  <zone>
+    <entry name="ZONA-VPN">
+      <network><layer3><member>tunnel.10</member></layer3></network>
+    </entry>
+  </zone>
+
+  <rulebase><security><rules>
+    <entry name="SITE-B-PARA-SITE-A">
+      <from><member>TRUST</member></from>
+      <to><member>ZONA-VPN</member></to>
+      <source><member>LAN_SITE_B</member></source>
+      <destination><member>LAN_SITE_A</member></destination>
+      <application><member>any</member></application>
+      <service><member>application-default</member></service>
+      <action>allow</action>
+    </entry>
+    <entry name="SITE-A-PARA-SITE-B">
+      <from><member>ZONA-VPN</member></from>
+      <to><member>TRUST</member></to>
+      <source><member>LAN_SITE_A</member></source>
+      <destination><member>LAN_SITE_B</member></destination>
+      <application><member>any</member></application>
+      <service><member>application-default</member></service>
+      <action>allow</action>
+    </entry>
+  </rules></security></rulebase>
+
+  Verificação:
+    show vpn ike-sa gateway GW-SITE-A-FORTIGATE
+    show vpn ipsec-sa tunnel TUNEL-SITE-A
+    show vpn flow tunnel-id <id>
+    test routing fib-lookup virtual-router default ip 10.10.0.5
+-->

@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backups gerados em execução: mantenha um exemplo versionado, ignore o resto
+backups/*.cfg
+!backups/EXEMPLO_*.cfg
+
+# Estado do dispositivo simulado (volátil, regenerado a cada uso)
+.estado_simulado/
+
+# Log de execuções (volátil; mantenha um exemplo versionado, ignore o resto)
+logs/*.jsonl
+!logs/EXEMPLO_execucoes.jsonl
+
+# Segredos - nunca versionar
+.env
+*.key
+*.pem
+credenciais*.yaml
+
+.DS_Store
+.idea/
+.vscode/
