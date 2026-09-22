@@ -36,8 +36,23 @@
             <input type="text" id="host" value="{{ padroes.host }}" placeholder="192.168.10.2">
           </div>
           <div>
-            <label for="port">Porta SSH</label>
+            <label for="port">Porta</label>
             <input type="number" id="port" value="{{ padroes.port }}" min="1" max="65535">
+          </div>
+        </div>
+        <div class="grade" style="grid-template-columns: 1fr 2fr">
+          <div>
+            <label for="transporte">Transporte</label>
+            <select id="transporte" style="width:100%;padding:8px 10px;font-size:14px;border:1px solid var(--linha);border-radius:4px">
+              <option value="ssh">SSH</option>
+              <option value="telnet">Telnet</option>
+            </select>
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <p class="vazio" style="margin:0;padding:8px 0 0" id="dicaTransporte">
+              Use Telnet se o SSH do dispositivo estiver instável (comum em algumas imagens IOU) — a porta muda para 23 automaticamente.
+            </p>
           </div>
         </div>
         <div class="grade-3">

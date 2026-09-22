@@ -66,12 +66,18 @@ def _device_config(payload: dict) -> DeviceConfig:
     simulate = bool(conexao.get("simulate"))
     if not simulate and not host:
         raise ValidationError("Informe o IP do switch ou ative o modo simulado.")
+    transporte = (conexao.get("transporte") or "ssh").strip().lower()
+    if transporte not in ("ssh", "telnet"):
+        raise ValidationError(f"Transporte inválido: {transporte!r}. Use 'ssh' ou 'telnet'.")
+    porta_informada = conexao.get("port")
+    porta = int(porta_informada) if porta_informada else (23 if transporte == "telnet" else 22)
     return DeviceConfig(
         host=host or "simulado",
         username=(conexao.get("username") or "").strip(),
         password=conexao.get("password") or "",
         secret=conexao.get("secret") or "",
-        port=int(conexao.get("port") or 22),
+        port=porta,
+        transporte=transporte,
         simulate=simulate,
     )
 

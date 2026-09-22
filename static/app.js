@@ -82,12 +82,22 @@ function conexaoAtual() {
   return {
     host: $("host").value.trim(),
     port: Number($("port").value) || 22,
+    transporte: $("transporte").value,
     username: $("username").value.trim(),
     password: $("password").value,
     secret: $("secret").value,
     simulate: $("simulate").checked,
   };
 }
+
+$("transporte").addEventListener("change", (e) => {
+  const porta = $("port");
+  // Conveniência: ao trocar o transporte, ajusta a porta padrão junto —
+  // só se ainda estiver no valor padrão do outro transporte, pra não
+  // sobrescrever uma porta customizada que a pessoa já tenha digitado.
+  if (e.target.value === "telnet" && porta.value === "22") porta.value = "23";
+  else if (e.target.value === "ssh" && porta.value === "23") porta.value = "22";
+});
 
 function montarPayload() {
   const vlans = [...lista.querySelectorAll(".vlan-linha")]

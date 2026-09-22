@@ -68,6 +68,7 @@ class DeviceConfig:
     secret: str = ""
     port: int = 22
     device_type: str = "cisco_ios"
+    transporte: str = "ssh"  # "ssh" | "telnet" — ver CiscoSwitch.connect()
     simulate: bool = False
     conn_timeout: int = 20
 
@@ -106,29 +107,56 @@ class BaseSwitch:
 
 
 class CiscoSwitch(BaseSwitch):
-    """Switch Cisco real, acessado por SSH com Netmiko."""
+    """Switch/roteador Cisco real, acessado por SSH ou Telnet via Netmiko.
+
+    Telnet existe como alternativa porque algumas imagens IOU (comuns em
+    laboratórios GNS3 caseiros) têm uma implementação de SSH instável — o
+    servidor derruba a conexão (`Connection reset`) bem no início da troca
+    de banner, mesmo com chave RSA, usuário e linhas VTY corretos. Nesse
+    caso, Telnet costuma funcionar normalmente, porque não depende dessa
+    camada de criptografia. Fica a critério de quem está rodando: se o SSH
+    funcionar, prefira-o.
+    """
 
     def __init__(self, cfg: DeviceConfig):
         self.cfg = cfg
         self._conn = None
 
+    def _device_type_efetivo(self) -> str:
+        if self.cfg.transporte == "telnet":
+            # Se quem chamou já customizou device_type manualmente, respeita;
+            # senão, deriva a variante telnet automaticamente.
+            if self.cfg.device_type in ("cisco_ios", "", None):
+                return "cisco_ios_telnet"
+        return self.cfg.device_type
+
+    def _porta_efetiva(self) -> int:
+        # Porta 22 é o padrão de SSH; se pediu telnet e ninguém mudou a
+        # porta manualmente, usa a porta padrão de telnet (23).
+        if self.cfg.transporte == "telnet" and self.cfg.port == 22:
+            return 23
+        return self.cfg.port
+
     def connect(self):
         from netmiko import ConnectHandler
         from netmiko.exceptions import NetmikoAuthenticationException, NetmikoTimeoutException
 
+        porta = self._porta_efetiva()
         params = {
-            "device_type": self.cfg.device_type,
+            "device_type": self._device_type_efetivo(),
             "host": self.cfg.host,
             "username": self.cfg.username,
             "password": self.cfg.password,
-            "port": self.cfg.port,
+            "port": porta,
             "conn_timeout": self.cfg.conn_timeout,
             "fast_cli": False,  # Packet Tracer/IOSvL2 não gostam de fast_cli
         }
         if self.cfg.secret:
             params["secret"] = self.cfg.secret
 
-        log.info("Conectando em %s:%s", self.cfg.host, self.cfg.port)
+        log.info(
+            "Conectando em %s:%s (%s)", self.cfg.host, porta, self.cfg.transporte
+        )
         try:
             self._conn = ConnectHandler(**params)
             if self.cfg.secret:
@@ -138,9 +166,10 @@ class CiscoSwitch(BaseSwitch):
                 f"Autenticação recusada em {self.cfg.host}. Verifique usuário e senha."
             ) from exc
         except NetmikoTimeoutException as exc:
+            meio = "o Telnet está habilitado" if self.cfg.transporte == "telnet" else "o SSH está habilitado"
             raise SwitchError(
-                f"Sem resposta de {self.cfg.host}:{self.cfg.port}. "
-                "Confirme o IP, se o SSH está habilitado e se há rota até o switch."
+                f"Sem resposta de {self.cfg.host}:{porta}. "
+                f"Confirme o IP, se {meio} e se há rota até o switch."
             ) from exc
         except Exception as exc:  # paramiko e afins
             raise SwitchError(f"Falha ao conectar em {self.cfg.host}: {exc}") from exc

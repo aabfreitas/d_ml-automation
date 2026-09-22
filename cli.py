@@ -50,6 +50,14 @@ def parse_args(argv=None):
     p.add_argument("--senha", default="")
     p.add_argument("--enable", default="", help="senha de enable, se houver")
     p.add_argument(
+        "--transporte",
+        choices=["ssh", "telnet"],
+        default="ssh",
+        help="protocolo de conexão. Use telnet se o SSH do dispositivo estiver instável "
+        "(comum em algumas imagens IOU) — com telnet, a porta padrão vira 23 "
+        "automaticamente, a menos que --porta seja informado.",
+    )
+    p.add_argument(
         "--dispositivo",
         choices=["switch", "router"],
         default="switch",
@@ -179,6 +187,7 @@ def main(argv=None) -> int:
         password=args.senha,
         secret=args.enable,
         port=args.porta,
+        transporte=args.transporte,
         simulate=args.simular,
     )
 
