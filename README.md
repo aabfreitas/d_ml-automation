@@ -301,6 +301,13 @@ switches, os servidores DHCP/NTP e os clientes), está documentada em
 de serviços (por que o `ip helper-address` é necessário) e uma nota sobre por que os
 hashes de senha foram redigidos antes de publicar.
 
+Uma investigação extensa de conectividade de gerência — seis causas identificadas e
+corrigidas, incluindo uma troca de imagem IOU no meio do caminho — está documentada em
+[`lab/troubleshooting.md`](lab/troubleshooting.md). **A automação foi executada com
+sucesso contra os quatro dispositivos reais** (três switches e o roteador), não mais em
+modo simulado — cada execução conectou por SSH real, aplicou a configuração, salvou na
+NVRAM e validou o resultado.
+
 O passo a passo genérico de preparo de SSH (Packet Tracer ou GNS3/EVE-NG com IOSvL2) está
 em [`docs/laboratorio.md`](docs/laboratorio.md).
 

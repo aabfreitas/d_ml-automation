@@ -1,20 +1,29 @@
-# Investigação: conectividade de gerência do laboratório (22/09/2026)
+# Investigação: conectividade de gerência do laboratório (22-23/09/2026)
 
-Registro técnico da sessão de troubleshooting de rede realizada para tentar executar a
-automação Python contra os equipamentos reais do laboratório GNS3. Documenta o que foi
-diagnosticado, corrigido e o que permaneceu sem solução — como evidência do processo, não
-só do resultado.
+Registro técnico da sessão de troubleshooting de rede realizada para executar a
+automação Python contra os equipamentos reais do laboratório GNS3. Documenta cada
+problema diagnosticado e corrigido ao longo do processo — como evidência da investigação,
+não só do resultado final.
 
 ## Resumo executivo
 
-Quatro problemas de rede distintos foram identificados e corrigidos ao longo da
-investigação. Um quinto problema — instabilidade na camada de transporte (SSH e Telnet)
-entre a GNS3 VM e os switches IOU — foi diagnosticado extensivamente mas **não foi
-resolvido**, apesar de eliminar sistematicamente todas as causas mais prováveis. Por esse
-motivo, a entrega final deste desafio usa o modo simulado do projeto (explicitamente
-previsto no enunciado: *"switch Cisco (simulado ou real)"*), com as evidências reais do
-laboratório (topologia, roteamento, NAT, DHCP relay, NTP) documentadas separadamente em
-[`lab/README.md`](README.md) — tudo isso foi confirmado funcionando de fato.
+Ao todo, **seis problemas de rede distintos** foram identificados e corrigidos: acesso do
+host Windows à rede do laboratório (Npcap ausente), um adaptador de loopback conflitando
+com a rota de gerência, o NAT do roteador "mordendo" tráfego de gerência, SSH sem chave
+após reinícios, uma incompatibilidade de algoritmos criptográficos entre o Paramiko
+moderno e o SSH legado do IOS, e um estado interno inconsistente no mecanismo
+`ip default-gateway` de um dos switches. No meio do caminho, a imagem IOU usada
+originalmente nos switches se mostrou instável a ponto de nunca ter sido resolvida —
+levando à troca por uma imagem diferente (`i86bi-linux-l2-ipbasek9-15.1d`), que revelou
+os últimos problemas (algoritmo e gateway) mas, uma vez corrigidos, funcionou de forma
+estável e confiável.
+
+**Resultado final: a automação foi executada com sucesso contra os quatro dispositivos
+reais da topologia** (`CD-SP1-CSW001`, `CD-SP1-SW001`, `CD-SP1-SW002`, `CD-SP1-CR001`) —
+não mais em modo simulado. Veja a seção final, "Sucesso: os quatro dispositivos
+funcionando com a automação real", para os resultados completos. As evidências gerais do
+laboratório (topologia, roteamento, NAT, DHCP relay, NTP) estão documentadas
+separadamente em [`lab/README.md`](README.md).
 
 ---
 
@@ -268,4 +277,66 @@ original usada nos switches — este, causado por uma imagem diferente, era só 
 incompatibilidade de algoritmos entre um SSH antigo (mas funcional) e um cliente Python
 moderno demais. As duas imagens IOU tinham, portanto, causas diferentes para o mesmo
 sintoma superficial ("não consigo conectar por SSH").
+
+---
+
+## Sucesso: os quatro dispositivos funcionando com a automação real
+
+Depois da correção do algoritmo SSH (`netmiko[par4]`), o `CD-SP1-CSW001` (na imagem nova)
+foi reencaixado na topologia padrão (`CR001 → CSW001 → SW001/SW002`), e surgiu **mais um**
+problema, desta vez de roteamento — documentado abaixo — antes do sucesso final.
+
+### Problema 5: `ip default-gateway` do switch não alcança nada fora da própria sub-rede
+
+**Sintoma:** depois de recabear o CSW001 de volta à topologia normal, ele respondia a
+ping para qualquer IP dentro da sua própria sub-rede de gerência (`192.168.50.0/24`) —
+inclusive o próprio gateway (`192.168.50.1`) — mas **qualquer coisa fora dessa sub-rede**
+(o `Gi1/0` do CR001 em `192.168.113.10`, ou a internet em `8.8.8.8`) dava 100% de perda,
+de forma absoluta e repetida em várias tentativas.
+
+**Diagnóstico, passo a passo:**
+
+1. `debug ip packet detail` filtrado por ACL no CR001 confirmou que o roteador recebia,
+   processava (NAT, roteamento via RIB) e **efetivamente enviava** o pacote de volta em
+   direção ao switch — do ponto de vista do CR001, tudo funcionava.
+2. Contadores de interface (`show interfaces ... | include packets input`) confirmaram
+   que os pacotes de fato chegavam em cada salto do caminho (VM → CR001 → CSW001).
+3. `debug ip icmp` no CSW001 confirmou que ele **gerava e enviava** a resposta
+   (`echo reply sent, src 192.168.50.6, dst 192.168.113.128`).
+4. Mas o pacote de resposta nunca reaparecia no `debug ip packet` do CR001, mesmo com
+   `no ip cef` (para garantir que o debug enxergasse tudo). Ou seja: o switch *achava*
+   que tinha enviado, mas o pacote nunca chegava no roteador.
+5. Um padrão ficou claro: **todo teste que funcionava tinha destino dentro da própria
+   sub-rede do switch; todo teste que falhava tinha destino fora dela** — inclusive um
+   `ping 192.168.113.10` direto do CSW001 (sem envolver internet/NAT), que também falhou.
+
+Isso isolou a causa no mecanismo `ip default-gateway` — o caminho simplificado que um
+switch L2 (sem `ip routing`) usa para tráfego de gerência destinado a fora da própria
+sub-rede. Duas tentativas de correção:
+
+- **Tornar a VLAN 50 nativa no trunk** (`encapsulation dot1Q 50 native` no roteador,
+  `switchport trunk native vlan 50` nos switches) — não resolveu sozinho.
+- **"Reaplicar" o comando `ip default-gateway`** já existente (`no ip routing` /
+  `ip default-gateway 192.168.50.1`, mesmo valor de antes) — **resolveu**. O comando
+  aparecia idêntico no `show running-config` antes e depois, sugerindo que havia um
+  estado interno (provavelmente o ponteiro ARP/adjacência associado ao gateway) que
+  ficou inconsistente em algum momento — possivelmente um efeito colateral de todo o
+  recabeamento e reinícios de nós feitos durante os testes anteriores — e que só se
+  resolveu forçando o IOS a recalcular esse estado.
+
+### Resultado final: automação executada com sucesso nos quatro dispositivos reais
+
+Com a correção acima, replicada em `CD-SP1-SW001` e `CD-SP1-SW002`, a automação foi
+executada de ponta a ponta contra hardware real — não mais simulado:
+
+| Dispositivo | Resultado | Observação |
+|---|---|---|
+| `CD-SP1-CSW001` | `Resultado: configuração conforme o padrão` | Detectou e alertou uma VLAN 85 "legado" fora do padrão, sem apagá-la |
+| `CD-SP1-SW001` | `Resultado: configuração conforme o padrão` | Detectou e alertou uma VLAN 3 "teste" fora do padrão |
+| `CD-SP1-SW002` | `Resultado: configuração conforme o padrão` | — |
+| `CD-SP1-CR001` | `Resultado: configuração conforme o padrão` | Um segundo teste, com uma subinterface `.77` extra, confirmou o mesmo alerta de "fora do padrão" no roteador |
+
+Todas as execuções fizeram backup automático antes de aplicar, salvaram na NVRAM, e a
+validação pós-aplicação confirmou o estado real do equipamento — o fluxo completo
+descrito no desafio, de ponta a ponta, contra hardware Cisco de verdade.
 

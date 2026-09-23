@@ -74,12 +74,23 @@ Se for reproduzir este laboratório, defina sua própria senha em cada
 equipamento (`enable secret <sua_senha>` / `username admin secret
 <sua_senha>`) — não reaproveite hash de outro ambiente.
 
+## Conectividade de gerência (SSH) — investigação e sucesso final
+
+Uma investigação extensa de conectividade de gerência foi realizada em 22-23/09/2026 —
+seis problemas de rede identificados e corrigidos, incluindo uma troca de imagem IOU no
+meio do caminho (a original nunca teve o SSH estabilizado). Registro completo, com
+evidências de cada teste, em [`troubleshooting.md`](troubleshooting.md).
+
+**A automação foi executada com sucesso contra os quatro dispositivos reais** —
+`CD-SP1-CSW001`, `CD-SP1-SW001`, `CD-SP1-SW002` e `CD-SP1-CR001` — não mais em modo
+simulado. Cada execução conectou por SSH, fez backup, aplicou a configuração, salvou na
+NVRAM e validou o resultado, incluindo a detecção correta de VLANs/subinterfaces "fora do
+padrão" deixadas por testes anteriores.
+
 ## Como isso se conecta à automação Python
 
-A automação em `src/`/`app.py`/`cli.py` já reconhece a convenção de nome
-usada aqui (`CD-SP1-<TIPO><nº>`) sem gerar aviso de "fora do padrão" — foi
-desenhada em cima deste ambiente real, não o contrário. Para reaplicar (ou
-só validar) a configuração de qualquer um destes equipamentos:
+Os comandos abaixo já foram executados com sucesso contra os equipamentos reais desta
+topologia (ver `troubleshooting.md` para os resultados completos):
 
 ```bash
 python cli.py --host 192.168.50.6 --usuario admin --senha <sua_senha> --enable <sua_senha> --hostname CD-SP1-CSW001
