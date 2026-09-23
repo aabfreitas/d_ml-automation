@@ -1,3 +1,9 @@
 Flask==3.0.3
-netmiko==4.4.0
+# [par4] fixa o Paramiko numa versão <5.0 que ainda oferece os algoritmos de
+# SSH antigos (diffie-hellman-group1-sha1, aes128-cbc, etc.) que switches Cisco
+# mais antigos/imagens de laboratório exigem. O Paramiko 5.0+ removeu esse
+# suporte por completo do código (não é só um "desligado por padrão"), então
+# sem essa fixação o Netmiko não consegue negociar SSH com esses equipamentos -
+# ver lab/troubleshooting.md para o diagnóstico completo.
+netmiko[par4]>=4.4.0
 pytest==8.3.3
