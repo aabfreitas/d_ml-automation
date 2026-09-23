@@ -85,10 +85,10 @@ desmarque a opção, preencha IP, usuário e senha, e clique em **Aplicar**.
 python cli.py --simular
 
 # switch real
-python cli.py --host 192.168.10.2 --usuario admin --senha cisco
+python cli.py --host 192.168.10.2 --usuario admin --senha cisco123
 
 # só conferir, sem alterar nada
-python cli.py --host 192.168.10.2 --usuario admin --senha cisco --somente-validar
+python cli.py --host 192.168.10.2 --usuario admin --senha cisco123 --somente-validar
 
 # VLANs personalizadas
 python cli.py --simular --vlan 30:VLAN_GESTAO --vlan 40:VLAN_WIFI
@@ -99,10 +99,10 @@ python cli.py --simular --json
 # usando Telnet em vez de SSH (necessário se o switch tiver SSH legado —
 # ver lab/troubleshooting.md para o caso real que motivou isso). A porta
 # muda de 22 para 23 automaticamente, a menos que --porta seja informado
-python cli.py --host 192.168.10.2 --usuario admin --senha cisco --transporte telnet
+python cli.py --host 192.168.10.2 --usuario admin --senha cisco123 --transporte telnet
 
 # restaurar um backup salvo anteriormente (rollback)
-python cli.py --host 192.168.10.2 --usuario admin --senha cisco --restaurar CD-SP1-SW001_20260916-120000.cfg
+python cli.py --host 192.168.10.2 --usuario admin --senha cisco123 --restaurar CD-SP1-SW001_20260916-120000.cfg
 
 # listar as últimas execuções registradas (sem conectar em nada)
 python cli.py --listar-logs
