@@ -1,0 +1,292 @@
+=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2026.09.23 11:48:54 =~=~=~=~=~=~=~=~=~=~=~=
+
+[?2004l
+[?2004h]0;gns3@gns3vm: ~ gns3@gns3vm:~$ [7mcd ~/d_ml-automation[27m
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccd ~/d_ml-automation
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ [7mpython3 cli.py --host 192.168.50.6 --usuario admin --senha SUA_SENHA --enable SUA_SENHA --hostname CD-SP1-CSW001[27m
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpython3 cli.py --host 192.168.50.6 --usuario admin --senha SUA_SENHA --enable SUA_SENHA --hostname CD-SP1-CSW001[1P[1P[1P[1P[1P[1P[1P[1P[1P[1@c[1@i[1@s[1@c[1@o[1@1[1@2[1@3[1P[1P[1P[1P[1P[1P[1P[1P[1P[1@c[1@i[1@s[1@c[1@o[1@1[1@2[1@3
+[?2004l
+INFO    Conectando em 192.168.50.6:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.50.6 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-CSW001_20260923-144956.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-CSW001_20260923-144956.cfg.
+INFO    [OK] Aplicação 3 VLAN(s) e o hostname 'CD-SP1-CSW001' enviados.
+INFO    [OK] Gravação na NVRAM Compressed configuration from 2255 bytes to 1338 bytes[OK]
+INFO    [OK] Validação Configuração aplicada, mas há itens fora do padrão no switch.
+
+[OK]    14:49:55  Conexão: Sessão aberta com 192.168.50.6 (real).
+[OK]    14:49:56  Backup: Configuração anterior salva em CD-SP1-CSW001_20260923-144956.cfg.
+[OK]    14:49:59  Aplicação: 3 VLAN(s) e o hostname 'CD-SP1-CSW001' enviados.
+[OK]    14:50:01  Gravação na NVRAM: Compressed configuration from 2255 bytes to 1338 bytes[OK]
+[OK]    14:50:03  Validação: Configuração aplicada, mas há itens fora do padrão no switch.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-CSW001'.
+[OK]    vlan 10: VLAN ativa com o nome 'VLAN_DADOS'.
+[OK]    vlan 20: VLAN ativa com o nome 'VLAN_VOZ'.
+[OK]    vlan 50: VLAN ativa com o nome 'VLAN_SEGURANCA'.
+[AVISO] vlan 85: Configuração fora do padrão: VLAN presente no switch e ausente do padrão informado. Revise antes de remover.
+        esperado: (não prevista) | encontrado: legado
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-CSW001_20260923-144956.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ [7mpython3 cli.py --host 192.168.50.7 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001[27m
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpython3 cli.py --host 192.168.50.7 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001
+[?2004l
+INFO    Conectando em 192.168.50.7:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) failed.
+INFO    [ERRO] Conexão Autenticação recusada em 192.168.50.7. Verifique usuário e senha.
+
+[ERRO]  14:51:21  Conexão: Autenticação recusada em 192.168.50.7. Verifique usuário e senha.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+Erro: Autenticação recusada em 192.168.50.7. Verifique usuário e senha.
+
+Resultado: há divergências a tratar.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ python3 cli.py --host 192.168.50.7 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001[1P[1@8
+[?2004l
+INFO    Conectando em 192.168.50.8:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) failed.
+INFO    [ERRO] Conexão Autenticação recusada em 192.168.50.8. Verifique usuário e senha.
+
+[ERRO]  14:51:51  Conexão: Autenticação recusada em 192.168.50.8. Verifique usuário e senha.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+Erro: Autenticação recusada em 192.168.50.8. Verifique usuário e senha.
+
+Resultado: há divergências a tratar.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ python3 cli.py --host 192.168.50.8 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C7[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1@6 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-C[C[C[C[C[C
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccd ~/d_ml-automation[Kping -c 3 192.168.50.6[K7
+[?2004l
+PING 192.168.50.7 (192.168.50.7) 56(84) bytes of data.
+64 bytes from 192.168.50.7: icmp_seq=1 ttl=254 time=65.9 ms
+64 bytes from 192.168.50.7: icmp_seq=2 ttl=254 time=68.2 ms
+64 bytes from 192.168.50.7: icmp_seq=3 ttl=254 time=64.6 ms
+
+--- 192.168.50.7 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 1998ms
+rtt min/avg/max/mdev = 64.618/66.236/68.170/1.467 ms
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ ping -c 3 192.168.50.7[K8
+[?2004l
+PING 192.168.50.8 (192.168.50.8) 56(84) bytes of data.
+64 bytes from 192.168.50.8: icmp_seq=1 ttl=254 time=37.6 ms
+64 bytes from 192.168.50.8: icmp_seq=2 ttl=254 time=60.4 ms
+64 bytes from 192.168.50.8: icmp_seq=3 ttl=254 time=61.7 ms
+
+--- 192.168.50.8 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 1998ms
+rtt min/avg/max/mdev = 37.583/53.233/61.700/11.078 ms
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ ping -c 3 192.168.50.87ython3 cli.py --host 192.168.50.8 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C7[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+[?2004l
+INFO    Conectando em 192.168.50.7:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.50.7 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-SW001_20260923-145248.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-SW001_20260923-145248.cfg.
+INFO    [OK] Aplicação 3 VLAN(s) e o hostname 'CD-SP1-SW001' enviados.
+INFO    [OK] Gravação na NVRAM Compressed configuration from 2223 bytes to 1343 bytes[OK]
+INFO    [OK] Validação Configuração aplicada, mas há itens fora do padrão no switch.
+
+[OK]    14:52:47  Conexão: Sessão aberta com 192.168.50.7 (real).
+[OK]    14:52:48  Backup: Configuração anterior salva em CD-SP1-SW001_20260923-145248.cfg.
+[OK]    14:52:51  Aplicação: 3 VLAN(s) e o hostname 'CD-SP1-SW001' enviados.
+[OK]    14:52:54  Gravação na NVRAM: Compressed configuration from 2223 bytes to 1343 bytes[OK]
+[OK]    14:52:55  Validação: Configuração aplicada, mas há itens fora do padrão no switch.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-SW001'.
+[OK]    vlan 10: VLAN ativa com o nome 'VLAN_DADOS'.
+[OK]    vlan 20: VLAN ativa com o nome 'VLAN_VOZ'.
+[OK]    vlan 50: VLAN ativa com o nome 'VLAN_SEGURANCA'.
+[AVISO] vlan 3: Configuração fora do padrão: VLAN presente no switch e ausente do padrão informado. Revise antes de remover.
+        esperado: (não prevista) | encontrado: teste
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-SW001_20260923-145248.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ python3 cli.py --host 192.168.50.7 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cing -c 3 192.168.50.8[K7ython3 cli.py --host 192.168.50.8 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001
+[?2004l
+INFO    Conectando em 192.168.50.8:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.50.8 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-SW002_20260923-145307.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-SW002_20260923-145307.cfg.
+INFO    [OK] Aplicação 3 VLAN(s) e o hostname 'CD-SP1-SW001' enviados.
+INFO    [OK] Gravação na NVRAM CD-SP1-SW001#
+INFO    [OK] Validação Configuração conforme o padrão definido.
+
+[OK]    14:53:06  Conexão: Sessão aberta com 192.168.50.8 (real).
+[OK]    14:53:07  Backup: Configuração anterior salva em CD-SP1-SW002_20260923-145307.cfg.
+[OK]    14:53:11  Aplicação: 3 VLAN(s) e o hostname 'CD-SP1-SW001' enviados.
+[OK]    14:53:13  Gravação na NVRAM: CD-SP1-SW001#
+[OK]    14:53:14  Validação: Configuração conforme o padrão definido.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-SW001'.
+[OK]    vlan 10: VLAN ativa com o nome 'VLAN_DADOS'.
+[OK]    vlan 20: VLAN ativa com o nome 'VLAN_VOZ'.
+[OK]    vlan 50: VLAN ativa com o nome 'VLAN_SEGURANCA'.
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-SW002_20260923-145307.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ python3 cli.py --host 192.168.50.8 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW001
+[?2004l
+INFO    Conectando em 192.168.50.8:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.50.8 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-SW001_20260923-145400.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-SW001_20260923-145400.cfg.
+INFO    [OK] Aplicação 3 VLAN(s) e o hostname 'CD-SP1-SW001' enviados.
+INFO    [OK] Gravação na NVRAM Compressed configuration from 2224 bytes to 1344 bytes[OK]
+INFO    [OK] Validação Configuração conforme o padrão definido.
+
+[OK]    14:53:59  Conexão: Sessão aberta com 192.168.50.8 (real).
+[OK]    14:54:00  Backup: Configuração anterior salva em CD-SP1-SW001_20260923-145400.cfg.
+[OK]    14:54:03  Aplicação: 3 VLAN(s) e o hostname 'CD-SP1-SW001' enviados.
+[OK]    14:54:06  Gravação na NVRAM: Compressed configuration from 2224 bytes to 1344 bytes[OK]
+[OK]    14:54:07  Validação: Configuração conforme o padrão definido.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-SW001'.
+[OK]    vlan 10: VLAN ativa com o nome 'VLAN_DADOS'.
+[OK]    vlan 20: VLAN ativa com o nome 'VLAN_VOZ'.
+[OK]    vlan 50: VLAN ativa com o nome 'VLAN_SEGURANCA'.
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-SW001_20260923-145400.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ [7mpython3 cli.py --dispositivo router --host 192.168.113.10 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-CR001[27m
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpython3 cli.py --dispositivo router --host 192.168.113.10 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-CR001
+[?2004l
+INFO    Conectando em 192.168.113.10:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.113.10 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-CR001_20260923-145459.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-CR001_20260923-145459.cfg.
+INFO    [OK] Aplicação 3 subinterface(s) e o hostname 'CD-SP1-CR001' enviados.
+INFO    [OK] Gravação na NVRAM [OK]
+INFO    [OK] Validação Configuração do roteador conforme o padrão definido.
+
+[OK]    14:54:58  Conexão: Sessão aberta com 192.168.113.10 (real).
+[OK]    14:54:59  Backup: Configuração anterior salva em CD-SP1-CR001_20260923-145459.cfg.
+[OK]    14:55:03  Aplicação: 3 subinterface(s) e o hostname 'CD-SP1-CR001' enviados.
+[OK]    14:55:07  Gravação na NVRAM: [OK]
+[OK]    14:55:08  Validação: Configuração do roteador conforme o padrão definido.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-CR001'.
+[OK]    subinterface .10: IP confirmado como 192.168.10.1/255.255.255.0.
+[OK]    subinterface .20: IP confirmado como 192.168.20.1/255.255.255.0.
+[OK]    subinterface .50: IP confirmado como 192.168.50.1/255.255.255.0.
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-CR001_20260923-145459.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ python3 cli.py --dispositivo router --host 192.168.113.10 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-CR001
+[?2004l
+INFO    Conectando em 192.168.113.10:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.113.10 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-CR001_20260923-145551.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-CR001_20260923-145551.cfg.
+INFO    [OK] Aplicação 3 subinterface(s) e o hostname 'CD-SP1-CR001' enviados.
+INFO    [OK] Gravação na NVRAM [OK]
+INFO    [OK] Validação Configuração aplicada, mas há subinterfaces fora do padrão no roteador.
+
+[OK]    14:55:51  Conexão: Sessão aberta com 192.168.113.10 (real).
+[OK]    14:55:51  Backup: Configuração anterior salva em CD-SP1-CR001_20260923-145551.cfg.
+[OK]    14:55:55  Aplicação: 3 subinterface(s) e o hostname 'CD-SP1-CR001' enviados.
+[OK]    14:55:59  Gravação na NVRAM: [OK]
+[OK]    14:56:00  Validação: Configuração aplicada, mas há subinterfaces fora do padrão no roteador.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-CR001'.
+[OK]    subinterface .10: IP confirmado como 192.168.10.1/255.255.255.0.
+[OK]    subinterface .20: IP confirmado como 192.168.20.1/255.255.255.0.
+[OK]    subinterface .50: IP confirmado como 192.168.50.1/255.255.255.0.
+[AVISO] subinterface .77: Configuração fora do padrão: subinterface presente no roteador e ausente do padrão informado. Revise antes de remover.
+        esperado: (não prevista) | encontrado: (sem IP)
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-CR001_20260923-145551.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
+[?2004l
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ [7mpython3 cli.py --host 192.168.50.8 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW002[27m
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpython3 cli.py --host 192.168.50.8 --usuario admin --senha cisco123 --enable cisco123 --hostname CD-SP1-SW002
+[?2004l
+INFO    Conectando em 192.168.50.8:22 (ssh)
+INFO    Connected (version 2.0, client Cisco-1.25)
+INFO    Authentication (password) successful!
+INFO    [OK] Conexão Sessão aberta com 192.168.50.8 (real).
+INFO    Backup salvo em /home/gns3/d_ml-automation/backups/CD-SP1-SW001_20260923-145658.cfg
+INFO    [OK] Backup Configuração anterior salva em CD-SP1-SW001_20260923-145658.cfg.
+INFO    [OK] Aplicação 3 VLAN(s) e o hostname 'CD-SP1-SW002' enviados.
+INFO    [OK] Gravação na NVRAM CD-SP1-SW002#
+INFO    [OK] Validação Configuração conforme o padrão definido.
+
+[OK]    14:56:57  Conexão: Sessão aberta com 192.168.50.8 (real).
+[OK]    14:56:58  Backup: Configuração anterior salva em CD-SP1-SW001_20260923-145658.cfg.
+[OK]    14:57:01  Aplicação: 3 VLAN(s) e o hostname 'CD-SP1-SW002' enviados.
+[OK]    14:57:04  Gravação na NVRAM: CD-SP1-SW002#
+[OK]    14:57:05  Validação: Configuração conforme o padrão definido.
+[AVISO] entrada: O nome 'VLAN_SEGURANÇA' foi normalizado para 'VLAN_SEGURANCA': o Cisco IOS aceita apenas letras sem acento, números, '_' e '-'.
+
+--- Validação ---
+[OK]    hostname: Hostname confirmado como 'CD-SP1-SW002'.
+[OK]    vlan 10: VLAN ativa com o nome 'VLAN_DADOS'.
+[OK]    vlan 20: VLAN ativa com o nome 'VLAN_VOZ'.
+[OK]    vlan 50: VLAN ativa com o nome 'VLAN_SEGURANCA'.
+
+Backup: /home/gns3/d_ml-automation/backups/CD-SP1-SW001_20260923-145658.cfg
+
+Resultado: configuração conforme o padrão.
+[?2004h]0;gns3@gns3vm: ~/d_ml-automation gns3@gns3vm:~/d_ml-automation$ 
